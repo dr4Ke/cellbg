@@ -92,7 +92,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
               break;
             case DOKU_LEXER_SPECIAL :
               if (preg_match('/(<td[^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
-                $renderer->doc = preg_replace('/(<td[^<>]*)>[[:space:]]*$/', '\1 bgcolor='.$color.'>', $renderer->doc);
+                $renderer->doc = preg_replace('/(<td[^<>]*)>[[:space:]]*$/', '\1 style="background-color:'.$color.'">', $renderer->doc);
               } else {
                 $renderer->doc .= $text;
               }
