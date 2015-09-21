@@ -37,7 +37,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
  
     // What kind of syntax do we allow (optional)
     function getAllowedTypes() {
-        return array('formatting', 'substition', 'disabled');
+        return array('formatting', /*'substition', 'disabled'*/);
     }
  
    // What about paragraphs? (optional)
@@ -49,7 +49,10 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
  
     // Connect pattern to lexer
     function connectTo($mode) {
-      $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:(?=[^\n]*\|[[:space:]]*\n)',$mode,'plugin_cellbg');
+      if ($mode == "table")
+      {
+        $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:', $mode, 'plugin_cellbg');
+      }
     }
     function postConnect() {
       //$this->Lexer->addExitPattern(':','plugin_cellbg');
@@ -57,7 +60,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
  
  
     // Handle the match
-    function handle($match, $state, $pos, &$handler){
+    function handle($match, $state, $pos, &$handler) {
         switch ($state) {
           case DOKU_LEXER_ENTER :
             break;
@@ -79,6 +82,9 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
     // Create output
     function render($mode, &$renderer, $data) {
         if($mode == 'xhtml'){
+//         echo '<br /><pre>';
+//         echo htmlspecialchars($renderer->doc);
+//         echo '<br />';
           list($state, $color, $text) = $data;
           switch ($state) {
             case DOKU_LEXER_ENTER :
@@ -91,13 +97,16 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_EXIT :
               break;
             case DOKU_LEXER_SPECIAL :
-              if (preg_match('/(<td[^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
-                $renderer->doc = preg_replace('/(<td[^<>]*)>[[:space:]]*$/', '\1 style="background-color:'.$color.'">', $renderer->doc);
+              if (preg_match('/(<t[hd][^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
+                $renderer->doc = preg_replace('/(<t[hd][^>]*)>[[:space:]]*$/', '\1 style="background-color:'.$color.'">111', $renderer->doc);
               } else {
                 $renderer->doc .= $text;
               }
               break;
           }
+//         echo htmlspecialchars($renderer->doc);
+//         echo '<br />';
+//         echo '<br /></pre>';
           return true;
         }
         return false;

@@ -1,0 +1,23 @@
+div.picker button.pickerbutton.cellbg
+{
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  padding: 1em;
+  background-image: none;
+  background-image: url("images/gradient.png");
+}
+div.picker button.pickerbutton.cellbg:first-child
+{
+  width: 4em;
+  display: inline-block;
+  padding: 0;
+}
+div.picker button.pickerbutton.cellbg:hover
+{
+  background-image: none;
+}
+#picker_plugin_cellbg
+{
+  width: 10em;
+}
