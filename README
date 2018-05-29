@@ -1,2 +1,13 @@
 This is a plugin for dokuwiki.
 It will enable syntax to set cell background in tables.
+It also can create borders around a cell:
+Examples:
+
+| @#0000ff: cellcontent |   -> blue cell background
+| @transparent: cellcontent | -> transparent cell background
+| @#00ff00[]: cellcontent | ->green cell background AND Border around cell
+
+To install this plugin: 
+1. Download this repro as zip
+2. Go into Dokuwiki as admin
+3. Install plugin manually -> select downloaded zip file
