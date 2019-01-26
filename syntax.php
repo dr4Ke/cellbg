@@ -10,17 +10,17 @@
  * Derived from the highlight plugin from : http://www.dokuwiki.org/plugin:highlight
  * and : http://www.staddle.net/wiki/plugins/highlight
  */
- 
+
 if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../').'/');
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
- 
+
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
 class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
- 
+
     function getInfo(){  // return some info
         return array(
             'author' => 'dr4Ke',
@@ -31,22 +31,22 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
             'url'    => 'http://www.dokuwiki.org/plugin:cellbg',
         );
     }
- 
+
      // What kind of syntax are we?
     function getType(){ return 'formatting'; }
- 
+
     // What kind of syntax do we allow (optional)
     function getAllowedTypes() {
         return array('formatting', 'substition', 'disabled');
     }
- 
+
    // What about paragraphs? (optional)
    function getPType(){ return 'normal'; }
- 
+
     // Where to sort in?
     function getSort(){ return 200; }
- 
- 
+
+
     // Connect pattern to lexer
     function connectTo($mode) {
       $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:(?=[^\n]*\|[[:space:]]*\n)',$mode,'plugin_cellbg');
@@ -54,8 +54,8 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
     function postConnect() {
       //$this->Lexer->addExitPattern(':','plugin_cellbg');
     }
- 
- 
+
+
     // Handle the match
     function handle($match, $state, $pos, Doku_Handler $handler){
         switch ($state) {
@@ -75,7 +75,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
         }
         return array($state, "yellow", $match);
     }
- 
+
     // Create output
     function render($mode, Doku_Renderer $renderer, $data) {
         if($mode == 'xhtml'){
@@ -102,24 +102,24 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
         }
         return false;
     }
- 
+
     // validate color value $c
     // this is cut price validation - only to ensure the basic format is
     // correct and there is nothing harmful
     // three basic formats  "colorname", "#fff[fff]", "rgb(255[%],255[%],255[%])"
     function _isValid($c) {
- 
+
         $c = trim($c);
- 
+
         $pattern = "/
             (^[a-zA-Z]+$)|                                #colorname - not verified
             (^\#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$)|        #colorvalue
             (^rgb\(([0-9]{1,3}%?,){2}[0-9]{1,3}%?\)$)     #rgb triplet
             /x";
- 
+
         return (preg_match($pattern, $c));
- 
+
     }
 }
- 
+
 //Setup VIM: ex: et ts=4 sw=4 enc=utf-8 :
