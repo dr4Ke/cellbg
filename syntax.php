@@ -49,7 +49,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
  
     // Connect pattern to lexer
     function connectTo($mode) {
-      $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:(?=[^\n]*\|[[:space:]]*\n)',$mode,'plugin_cellbg');
+      $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z[\]]*:(?=[^\n]*\|[[:space:]]*\n)',$mode,'plugin_cellbg');
     }
     function postConnect() {
       //$this->Lexer->addExitPattern(':','plugin_cellbg');
@@ -69,11 +69,24 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
           case DOKU_LEXER_EXIT :
             break;
           case DOKU_LEXER_SPECIAL :
-            preg_match("/@([^:]*)/", $match, $color); // get the color
-            if ( $this->_isValid($color[1]) ) return array($state, $color[1], $match);
+             preg_match("/@([^:]*)/", $match, $color); // get the color
+            $color[2] = str_replace("[]","",$color[1]);
+            if($color[2] == $color[1]){//kein border
+                if ( $this->_isValid($color[2]) ){
+                    return array($state, $color[2], $match);
+                }else{
+                    return array($state, "transparent", $match);
+                }
+            }else{ //with border
+                if ( $this->_isValid($color[1]) ){
+                    return array($state, "|".$color[2], $match);
+                }else{
+                    return array($state, "|transparent", $match);
+                }
+            }
             break;
         }
-        return array($state, "yellow", $match);
+        return array($state, "transparent", $match);
     }
  
     // Create output
@@ -92,7 +105,13 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
               break;
             case DOKU_LEXER_SPECIAL :
               if (preg_match('/(<td[^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
-                $renderer->doc = preg_replace('/(<td[^<>]*)>[[:space:]]*$/', '\1 bgcolor='.$color.'>', $renderer->doc);
+                 $htmlBorder = '';
+                    $color_withoutBorder = str_replace("|","",$color);
+                    if($color_withoutBorder != $color){
+                         $htmlBorder = ' style="border: 2px solid black;"';
+                    }
+
+                $renderer->doc = preg_replace('/(<td[^<>]*)>[[:space:]]*$/', '\1 bgcolor='.$color_withoutBorder.$htmlBorder.'>', $renderer->doc);
               } else {
                 $renderer->doc .= $text;
               }
