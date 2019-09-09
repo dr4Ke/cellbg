@@ -49,7 +49,15 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
  
     // Connect pattern to lexer
     function connectTo($mode) {
-      $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:(?=[^\n]*\|[[:space:]]*\n)',$mode,'plugin_cellbg');
+      // 190909-AHo:
+      // The original pattern fails if the line doesn't end with a '|'
+      // which is the case if you use the WRAP plugin:
+      // | @green:Col 1 |<WRAP>
+      //   * first point
+      //   * next point
+      // </WRAP>|
+      // Added '<WRAP>' als an alternative match.
+      $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:(?=[^\n]*(?:\||\<WRAP\>)[[:space:]]*\n)',$mode,'plugin_cellbg');
     }
     function postConnect() {
       //$this->Lexer->addExitPattern(':','plugin_cellbg');
